@@ -12,4 +12,16 @@ fi
 
 # Run the deployment phase with support for action hooks.
 
-exec powershift image run
+#exec powershift image run
+
+if [ -f "/opt/app-root/s2i/run" ]; then
+    exec /opt/app-root/s2i/run
+elif [ -f "/opt/app-root/bin/start.sh" ]; then
+    exec /opt/app-root/bin/start.sh
+elif [ -f "manage.py" ]; then
+    exec python manage.py runserver 0.0.0.0:8080
+else
+    echo "Error: No valid run script found!"
+    exit 1
+fi
+
